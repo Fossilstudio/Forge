@@ -1,8 +1,8 @@
 /*
  * @Date: 2023-04-26 12:25:14
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-04-30 00:25:24
- * @FilePath: /Client/src/components/Footer.js
+ * @LastEditTime: 2023-05-01 14:14:10
+ * @FilePath: \Forge\client\src\components\Footer.js
  */
 import React from 'react';
 
@@ -11,9 +11,11 @@ function Footer() {
 
   const styles = {
     container:{
+      position:'relative',
       width:946,
       backgroundImage:"url("+contentBack+")",
       marginRight:5,
+      zIndex:2,
     },
     li:{
       padding:"0 25px",

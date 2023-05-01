@@ -1,8 +1,8 @@
 /*
  * @Date: 2023-04-26 12:30:37
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-01 01:58:45
- * @FilePath: /Forge/client/src/components/sign-up/SignUpPage.js
+ * @LastEditTime: 2023-05-01 14:20:21
+ * @FilePath: \Forge\client\src\components\sign-up\SignUpPage.js
  */
 import React from 'react';
 
@@ -11,7 +11,12 @@ function SignUpPage() {
   const loginBackground = '/resources/signup/contentbox-foe-login-small.png'
   const loginBtnBG = '/resources/signup/form-foe-button-small.png'
   const ippLoginIcons = '/resources/login/sprite-ipp-buttons.png'
-  const logo = '/resources/logo/foe_header_logo-ae2023c78.png'
+  const logo = '/resources/logo/logo-foe.png'
+  const formContainerEagles = '/resources/signup/decoration-foe-eagles.png'
+  const registerFormContainerBg = '/resources/signup/contentbox-foe-register.png'
+  const inputBackground = '/resources/signup/form-foe-input.png'
+  const buttonBackground = '/resources/login/form-foe-button-iframe.png'
+
 
   const styles={
     backgroundVideo:{
@@ -48,6 +53,39 @@ function SignUpPage() {
       marginLeft:4,
       backgroundImage:"url("+ippLoginIcons+")",
     },
+    registerEagles:{
+      position:'relative',
+      width:62,
+      height:205,
+      backgroundImage:"url("+formContainerEagles+")",
+      backgroundRepeat:'no-repeat',
+      zIndex:2,
+      top:-40,
+    },
+    formLabel: {
+      margin:'5px 3px 0',
+      fontSize:18,
+      fontWeight:700,
+      lineHeight:1.5,
+      color:'#d1d9df'
+    },
+    formInput: {
+      width:272,
+      height:32,
+      padding:'4px 6px',
+      fontSize:14,
+      fontWeight:700,
+      color:'#000',
+      backgroundImage:"url("+inputBackground+")",
+    },
+    formTerms: {
+      display:'flex',
+      justifyContent:'center',
+      alignItems:'center',
+      margin:'5px auto',
+      color:'#818c95',
+      fontSize:10,
+    }
   }
 
   return (
@@ -63,6 +101,7 @@ function SignUpPage() {
             src={backgroundVideo} 
             style={styles.backgroundVideo}/>
         </div>
+        {/* Login Form Start */}
         <div id='login' className='login'>
           <div className='login-form-wrapper' style={styles.loginFormWrapper}>
             <div id='app' style={{
@@ -135,15 +174,128 @@ function SignUpPage() {
             </div>
           </div>
         </div>
-        <div id='register-form'>
+        {/* Login Form End */}
+
+        {/* Register Form Start*/}
+        <div id='register-form' style={{
+          margin:'0 auto',
+          paddingTop:92,
+          width:480,
+          minHeight:868
+          }}>
           <h1 className='main-logo' style={{
             position:'relative',
             width:385,
             margin:'0 auto',
+            paddingTop:25,
+            zIndex:3,
           }}>
             <img src={logo} alt='Forge of Empires'/>
           </h1>
+          <div id="register-form-container" style={{
+            display:'flex',
+            width:529,
+            zIndex:1,
+            marginTop:-71
+          }}>
+            <div style={{...styles.registerEagles, 
+              left:30,
+              }}></div>
+            <div className='register-inner' style={{
+              width:499,
+              height:425,
+              backgroundImage:"url("+registerFormContainerBg+")",
+              backgroundSize:'cover',
+              zIndex:1,
+            }}>
+              <div className='app2' style={{
+                position:'relative',
+                display:'flex',
+                flexDirection:'column',
+                alignItems:'center',
+                top:80
+                }}>
+                <form name='registration' method='post' id='registration' >
+                  <div id='inputNickname'>
+                    <label style={styles.formLabel} htmlFor='registration_nickname'>Choose your username</label><br />
+                    <input type='text' id='registration_nickname' name='registration[nickname]' required 
+                      style={styles.formInput}/>
+                  </div>
+                  <div id='inputPassword'>
+                    <label style={styles.formLabel} htmlFor='registration_password'>Choose your password</label><br />
+                    <input type='text' id='registration_password' name='registration[password]' required
+                     style={styles.formInput}/>
+                  </div>
+                  <div id='terms' style={styles.formTerms}>
+                    <label htmlFor='registration_acceptTerms' style={{marginRight:10}}>
+                      <input type='checkbox' id='registration_acceptTerms' name='registration[acceptTerms]'/>
+                    </label>
+                    <label htmlFor='registration_acceptTerms'>
+                      <span>I accept the <a href='/' target='_blank'>Terms and Conditions</a></span><br />
+                      <span>You can find our Privacy Policy <a href='/' target='_blank'>here</a></span>
+                    </label>
+                  </div>
+                  <div style={{
+                    display:'flex',
+                    flexDirection:'column',
+                    alignItems:'center',
+                  }}><button style={{
+                    margin:'0 auto',
+                    padding:12,
+                    width:200,
+                    height:78,
+                    border:'none',
+                    background:'transparent',
+                    backgroundImage:"url("+buttonBackground+")",
+                    backgroundSize:'cover',
+                    fontSize:30,
+                    fontWeight:700,
+                    color:'#fffde6',
+                    cursor:'pointer',
+                  }}>
+                    <span>PLAY NOW</span>
+                    </button></div>
+                </form>
+              </div>
+              <div id='ipp' style={{
+                position:'relative',
+                display:'flex',
+                flexDirection:'column',
+                alignItems:'center',
+                top:80
+              }}>
+                <span style={{
+                  color:'#fff', fontSize:14, lineHeight:1.8
+                  }}>Or register with</span>
+                <div style={{display:'flex'}}>
+                  <a href='/'>
+                    <div style={{
+                      ...styles.ippIcon,
+                      backgroundPosition: "-22px 0",
+                    }}></div>
+                  </a>
+                  <a href='/'>
+                    <div style={{
+                      ...styles.ippIcon,
+                      backgroundPosition: "-43px 0",
+                    }}></div>
+                  </a>
+                  <a href='/'>
+                    <div style={{
+                      ...styles.ippIcon,
+                      backgroundPosition: "20px 0",
+                    }}></div>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div style={{
+              ...styles.registerEagles,
+              backgroundPosition:'-95px 0',
+              left:-37}}></div>
+          </div>
         </div>
+        {/* Register Form End */}
       </div>
     </div>
   );

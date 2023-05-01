@@ -1,20 +1,20 @@
 /*
  * @Date: 2023-04-27 01:04:03
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-04-30 01:02:55
- * @FilePath: /Client/src/components/sign-in/SignIn.js
+ * @LastEditTime: 2023-05-01 01:36:32
+ * @FilePath: /Forge/client/src/components/sign-in/SignIn.js
  */
 import React from 'react';
 import { useState } from 'react';
 
 function SignIn() {
-  const frameTopBottom = '../../resources/login/widget_block_top_bottom.png'
-  const frameFlex = '../../resources/login/widget_block_flex.png'
-  const inputBackground = '../../resources/login/form-foe-input-iframe.jpg'
-  const buttonBackground = '../../resources/login/form-foe-button-iframe.png'
-  const ippLoginIcons = '../../resources/login/sprite-ipp-buttons.png'
-  const playnowBackground = '../../resources/login/playnow_box_bg.jpg'
-  const registerBackground = '../../resources/login/contentbox-foe-iframe-background-s.jpg'
+  const frameTopBottom = '/resources/login/widget_block_top_bottom.png'
+  const frameFlex = '/resources/login/widget_block_flex.png'
+  const inputBackground = '/resources/login/form-foe-input-iframe.jpg'
+  const buttonBackground = '/resources/login/form-foe-button-iframe.png'
+  const ippLoginIcons = '/resources/login/sprite-ipp-buttons.png'
+  const playnowBackground = '/resources/login/playnow_box_bg.jpg'
+  const registerBackground = '/resources/login/contentbox-foe-iframe-background-s.jpg'
 
   const [playerName, setPlayerName] = useState('KyleRen')
 

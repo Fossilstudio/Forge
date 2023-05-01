@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-04-26 12:26:06
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-04-30 22:14:34
+ * @LastEditTime: 2023-04-30 23:01:19
  * @FilePath: /Forge/client/src/components/sign-in/SignInPage.js
  */
 import React from 'react';
@@ -11,12 +11,12 @@ import Footer from '../Footer';
 
 function SignInPage() {
   const wallpaper = '/resources/login/foe_wallpaper-d8649e9a6.jpg'
-  const logo = '../../resources/logo/foe_header_logo-ae2023c78.png'
-  const mainTop = '../../resources/login/main_top_bg-0e27a72fd.png'
-  const mainFlex = '../../resources/login/main_flex_bg.png'
-  const mainBottom = '../../resources/login/main_bottom_bg-95951135c.png'
-  const contentBack = '../../resources/login/content_bg.jpg'
-  const navButtonBackground = '../../resources/login/menu_buttons_spr.jpg'
+  const logo = '/resources/logo/foe_header_logo-ae2023c78.png'
+  const mainTop = '/resources/login/main_top_bg-0e27a72fd.png'
+  const mainFlex = '/resources/login/main_flex_bg.png'
+  const mainBottom = '/resources/login/main_bottom_bg-95951135c.png'
+  const contentBack = '/resources/login/content_bg.jpg'
+  const navButtonBackground = '/resources/login/menu_buttons_spr.jpg'
 
   const styles = {
     container: {

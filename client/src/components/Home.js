@@ -1,15 +1,17 @@
 /*
  * @Date: 2023-04-26 12:26:06
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-04-30 23:01:19
- * @FilePath: /Forge/client/src/components/sign-in/SignInPage.js
+ * @LastEditTime: 2023-05-01 23:25:20
+ * @FilePath: \Forge\client\src\components\Home.js
  */
 import React from 'react';
-import News from './News';
-import SignIn from './SignIn';
-import Footer from '../Footer';
+import {Link} from 'react-router-dom'
 
-function SignInPage() {
+import News from './sign-in/News';
+import SignIn from './sign-in/SignIn';
+import Footer from './Footer';
+
+function Home() {
   const wallpaper = '/resources/login/foe_wallpaper-d8649e9a6.jpg'
   const logo = '/resources/logo/foe_header_logo-ae2023c78.png'
   const mainTop = '/resources/login/main_top_bg-0e27a72fd.png'
@@ -101,29 +103,25 @@ function SignInPage() {
           <div id='main_nav' style={styles.mainNav}>
             <ul id='navigation' style={styles.navigation}>
               <li style={{...styles.navButton,backgroundPosition:'top left'}}>
-                <a className='dropdown_top' style={{color:'#fff'}}
-                   href='https://us0.forgeofempires.com/page/home/'
-                   >HOME</a>
+                <Link to={'/'}  style={{color:'#fff'}}>HOME</Link>
+              </li>
+              <li style={{...styles.navButton,backgroundPosition:'top'}}>
+                <Link to={'https://github.com/Fossilstudio'} target='_blank' style={{color:'#fff'}}>GITHUB</Link>
+              </li>
+              <li style={{...styles.navButton,backgroundPosition:'top'}}>
+                <Link to={'https://www.linkedin.com/in/ke-ren/'} target='_blank' style={{color:'#fff'}}>LINKEDIN</Link>
               </li>
               <li style={{...styles.navButton,backgroundPosition:'top'}}>
                 <a className='dropdown_top' style={{color:'#fff'}}
-                   href='https://us0.forgeofempires.com/page/home/'>GAME</a>
+                   href='/help'>HELP</a>
               </li>
               <li style={{...styles.navButton,backgroundPosition:'top'}}>
                 <a className='dropdown_top' style={{color:'#fff'}}
-                   href='https://us0.forgeofempires.com/page/home/'>GITHUB</a>
-              </li>
-              <li style={{...styles.navButton,backgroundPosition:'top'}}>
-                <a className='dropdown_top' style={{color:'#fff'}}
-                   href='https://us0.forgeofempires.com/page/home/'>HELP</a>
-              </li>
-              <li style={{...styles.navButton,backgroundPosition:'top'}}>
-                <a className='dropdown_top' style={{color:'#fff'}}
-                   href='https://us0.forgeofempires.com/page/home/'>CONTACT</a>
+                   href='/contact'>CONTACT</a>
               </li>
               <li style={{...styles.navButton,backgroundPosition:'top right'}}>
                 <a className='dropdown_top' style={{color:'#fff'}}
-                   href='https://us0.forgeofempires.com/page/home/'>GALLERY</a>
+                   href='/gallery'>GALLERY</a>
               </li>
             </ul>
           </div>
@@ -142,4 +140,4 @@ function SignInPage() {
   );
 }
 
-export default SignInPage;
+export default Home;

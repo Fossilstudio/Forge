@@ -1,11 +1,12 @@
 /*
  * @Date: 2023-04-27 01:04:03
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-01 01:36:32
- * @FilePath: /Forge/client/src/components/sign-in/SignIn.js
+ * @LastEditTime: 2023-05-01 23:30:50
+ * @FilePath: \Forge\client\src\components\sign-in\SignIn.js
  */
 import React from 'react';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function SignIn() {
   const frameTopBottom = '/resources/login/widget_block_top_bottom.png'
@@ -178,7 +179,9 @@ function SignIn() {
         </div>
         <div id='register-panel' style={styles.registerPanel}>
           <span>Not registered?</span>
-          <button style={styles.signInBtn}><span>REGISTER</span></button>
+          <Link to={"/signup"}>
+            <button style={styles.signInBtn}><span>REGISTER</span></button>
+          </Link>
         </div>
       </div>
       <div id='login_bottom' style={{...styles.topBottom,backgroundPositionY:-64}}></div>

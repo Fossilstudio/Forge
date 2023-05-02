@@ -1,10 +1,11 @@
 /*
  * @Date: 2023-04-26 12:30:37
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-01 14:20:21
+ * @LastEditTime: 2023-05-02 01:16:43
  * @FilePath: \Forge\client\src\components\sign-up\SignUpPage.js
  */
 import React from 'react';
+import { useState } from 'react';
 
 function SignUpPage() {
   const backgroundVideo = '/resources/signup/video-background.mp4'
@@ -17,6 +18,10 @@ function SignUpPage() {
   const inputBackground = '/resources/signup/form-foe-input.png'
   const buttonBackground = '/resources/login/form-foe-button-iframe.png'
 
+  const [registeration, setRegisteration] = useState({
+    username: "",
+    password: "",
+  })
 
   const styles={
     backgroundVideo:{
@@ -82,10 +87,96 @@ function SignUpPage() {
       display:'flex',
       justifyContent:'center',
       alignItems:'center',
-      margin:'5px auto',
+      margin:'10px auto',
       color:'#818c95',
       fontSize:10,
+    },
+    loginBtn: {
+      backgroundImage:"url("+loginBtnBG+")",
+      backgroundRepeat:'no-repeat',
+      backgroundColor:'transparent',
+      width:105,
+      height:28,
+      cursor:'pointer',
+      color:'#b4bbca',
+      fontSize:13,
+      textAlign:'center',
+      border:'none',
+    },
+    registerForm: {
+      margin:'0 auto',
+      paddingTop:92,
+      width:480,
+      minHeight:868
+    },
+    mainLogo: {
+      position:'relative',
+      width:385,
+      margin:'0 auto',
+      paddingTop:25,
+      zIndex:3,
+    },
+    registerBtn: {
+      margin:'0 auto',
+      padding:12,
+      width:200,
+      height:78,
+      border:'none',
+      background:'transparent',
+      backgroundImage:"url("+buttonBackground+")",
+      backgroundSize:'cover',
+      fontSize:30,
+      fontWeight:700,
+      color:'#fffde6',
+      cursor:'pointer',
+    },
+    ipp: {
+      position:'relative',
+      display:'flex',
+      flexDirection:'column',
+      alignItems:'center',
+      top:80
+    },
+    registerFormContainer: {
+      display:'flex',
+      width:529,
+      zIndex:1,
+      marginTop:-71
+    },
+    registInner: {
+      width:499,
+      height:425,
+      backgroundImage:"url("+registerFormContainerBg+")",
+      backgroundSize:'cover',
+      zIndex:1,
+    },
+    app2: {
+      position:'relative',
+      display:'flex',
+      flexDirection:'column',
+      alignItems:'center',
+      top:80
     }
+  }
+
+  const registOnchangeName = (e) => {
+    console.log(e.target.value)
+    const username = e.target.value
+    let player={...registeration}
+    player.username = username
+    setRegisteration(player)    
+  }
+
+  const registOnchangePassword = (e) => {
+    console.log(e.target.value)
+    const password = e.target.value
+    let player={...registeration}
+    player.password = password
+    setRegisteration(player)   
+  }
+  const registOnSubmit = (e) => {
+    e.preventDefault()
+    console.log(registeration)
   }
 
   return (
@@ -116,21 +207,10 @@ function SignUpPage() {
                   <input type='text' id='login-userid' name='login[userid]' required 
                     placeholder='player name'
                     style={styles.loginUserID}/>
-                  <input type='password' id='login-userid' name='login[userid]' required 
+                  <input type='password' id='login-password' name='login[userid]' required 
                     placeholder='Password'
                     style={styles.loginUserID}/>
-                  <button type='submit' id='login_Login' style={{
-                    backgroundImage:"url("+loginBtnBG+")",
-                    backgroundRepeat:'no-repeat',
-                    backgroundColor:'transparent',
-                    width:105,
-                    height:28,
-                    cursor:'pointer',
-                    color:'#b4bbca',
-                    fontSize:13,
-                    textAlign:'center',
-                    border:'none',
-                  }}>
+                  <button type='submit' id='login_Login' style={styles.loginBtn}>
                     <span>Login</span>
                   </button>
                 </div>
@@ -177,55 +257,37 @@ function SignUpPage() {
         {/* Login Form End */}
 
         {/* Register Form Start*/}
-        <div id='register-form' style={{
-          margin:'0 auto',
-          paddingTop:92,
-          width:480,
-          minHeight:868
-          }}>
-          <h1 className='main-logo' style={{
-            position:'relative',
-            width:385,
-            margin:'0 auto',
-            paddingTop:25,
-            zIndex:3,
-          }}>
+        <div id='register-form' style={styles.registerForm}>
+          <h1 className='main-logo' style={styles.mainLogo}>
             <img src={logo} alt='Forge of Empires'/>
           </h1>
-          <div id="register-form-container" style={{
-            display:'flex',
-            width:529,
-            zIndex:1,
-            marginTop:-71
-          }}>
-            <div style={{...styles.registerEagles, 
-              left:30,
-              }}></div>
-            <div className='register-inner' style={{
-              width:499,
-              height:425,
-              backgroundImage:"url("+registerFormContainerBg+")",
-              backgroundSize:'cover',
-              zIndex:1,
-            }}>
-              <div className='app2' style={{
-                position:'relative',
-                display:'flex',
-                flexDirection:'column',
-                alignItems:'center',
-                top:80
-                }}>
-                <form name='registration' method='post' id='registration' >
+          <div id="register-form-container" style={styles.registerFormContainer}>
+            <div style={{...styles.registerEagles, left:30, }}></div>
+            <div className='register-inner' style={styles.registInner}>
+              <div className='app2' style={styles.app2}>
+                <form name='registration' method='post' id='registration' onSubmit={registOnSubmit} >
+                  {/* input username start */}
                   <div id='inputNickname'>
                     <label style={styles.formLabel} htmlFor='registration_nickname'>Choose your username</label><br />
-                    <input type='text' id='registration_nickname' name='registration[nickname]' required 
-                      style={styles.formInput}/>
+                    <input type='text' id='registration_nickname'   name='registration[nickname]' required 
+                      style={styles.formInput}
+                      value={registeration.username}
+                      onChange={registOnchangeName}
+                     />
                   </div>
+                  {/* input username end */}
+
+                  {/* input password start */}
                   <div id='inputPassword'>
                     <label style={styles.formLabel} htmlFor='registration_password'>Choose your password</label><br />
                     <input type='text' id='registration_password' name='registration[password]' required
-                     style={styles.formInput}/>
+                     style={styles.formInput}
+                     value={registeration.password}
+                     onChange={registOnchangePassword}
+                     />
                   </div>
+                  {/* input password end */}
+
                   <div id='terms' style={styles.formTerms}>
                     <label htmlFor='registration_acceptTerms' style={{marginRight:10}}>
                       <input type='checkbox' id='registration_acceptTerms' name='registration[acceptTerms]'/>
@@ -239,31 +301,12 @@ function SignUpPage() {
                     display:'flex',
                     flexDirection:'column',
                     alignItems:'center',
-                  }}><button style={{
-                    margin:'0 auto',
-                    padding:12,
-                    width:200,
-                    height:78,
-                    border:'none',
-                    background:'transparent',
-                    backgroundImage:"url("+buttonBackground+")",
-                    backgroundSize:'cover',
-                    fontSize:30,
-                    fontWeight:700,
-                    color:'#fffde6',
-                    cursor:'pointer',
-                  }}>
+                  }}><button style={styles.registerBtn}>
                     <span>PLAY NOW</span>
                     </button></div>
                 </form>
               </div>
-              <div id='ipp' style={{
-                position:'relative',
-                display:'flex',
-                flexDirection:'column',
-                alignItems:'center',
-                top:80
-              }}>
+              <div id='ipp' style={styles.ipp}>
                 <span style={{
                   color:'#fff', fontSize:14, lineHeight:1.8
                   }}>Or register with</span>

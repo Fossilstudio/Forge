@@ -1,11 +1,12 @@
 /*
  * @Date: 2023-04-26 12:30:37
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-02 01:16:43
- * @FilePath: \Forge\client\src\components\sign-up\SignUpPage.js
+ * @LastEditTime: 2023-05-04 22:58:03
+ * @FilePath: /Forge/client/src/components/sign-up/SignUpPage.js
  */
 import React from 'react';
 import { useState } from 'react';
+import { userSignupRequest } from '../../actions/signupActions';
 
 function SignUpPage() {
   const backgroundVideo = '/resources/signup/video-background.mp4'
@@ -176,6 +177,7 @@ function SignUpPage() {
   }
   const registOnSubmit = (e) => {
     e.preventDefault()
+    userSignupRequest(registeration)
     console.log(registeration)
   }
 

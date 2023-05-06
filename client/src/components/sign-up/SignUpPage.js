@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-04-26 12:30:37
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-04 22:58:03
+ * @LastEditTime: 2023-05-05 00:26:23
  * @FilePath: /Forge/client/src/components/sign-up/SignUpPage.js
  */
 import React from 'react';
@@ -161,7 +161,6 @@ function SignUpPage() {
   }
 
   const registOnchangeName = (e) => {
-    console.log(e.target.value)
     const username = e.target.value
     let player={...registeration}
     player.username = username
@@ -169,7 +168,6 @@ function SignUpPage() {
   }
 
   const registOnchangePassword = (e) => {
-    console.log(e.target.value)
     const password = e.target.value
     let player={...registeration}
     player.password = password
@@ -177,7 +175,9 @@ function SignUpPage() {
   }
   const registOnSubmit = (e) => {
     e.preventDefault()
-    userSignupRequest(registeration)
+    userSignupRequest(registeration).then((res)=>{
+      console.log(res)
+    })
     console.log(registeration)
   }
 

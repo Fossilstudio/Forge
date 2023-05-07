@@ -1,12 +1,14 @@
 /*
  * @Date: 2023-04-26 12:30:37
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-05 00:26:23
+ * @LastEditTime: 2023-05-07 03:31:27
  * @FilePath: /Forge/client/src/components/sign-up/SignUpPage.js
  */
 import React from 'react';
 import { useState } from 'react';
 import { userSignupRequest } from '../../actions/signupActions';
+
+import {Link} from 'react-router-dom'
 
 function SignUpPage() {
   const backgroundVideo = '/resources/signup/video-background.mp4'
@@ -23,6 +25,11 @@ function SignUpPage() {
     username: "",
     password: "",
   })
+
+  const [valid, setValid] = useState(true)
+  const [login, setLogin] = useState(false)
+  const [error, setError] = useState('')
+  const [username, setUsername] = useState('')
 
   const styles={
     backgroundVideo:{
@@ -171,14 +178,22 @@ function SignUpPage() {
     const password = e.target.value
     let player={...registeration}
     player.password = password
-    setRegisteration(player)   
+    setRegisteration(player)
   }
+  
   const registOnSubmit = (e) => {
     e.preventDefault()
-    userSignupRequest(registeration).then((res)=>{
-      console.log(res)
-    })
-    console.log(registeration)
+    userSignupRequest(registeration)
+      .then((res)=>{
+        console.log('regist success')
+        console.log(res)
+        setLogin(true)
+        setUsername(res.data.username)
+      })
+      .catch((err)=>{
+        setValid(false)
+        setError(err.response.data)
+      })
   }
 
   return (
@@ -267,7 +282,7 @@ function SignUpPage() {
             <div style={{...styles.registerEagles, left:30, }}></div>
             <div className='register-inner' style={styles.registInner}>
               <div className='app2' style={styles.app2}>
-                <form name='registration' method='post' id='registration' onSubmit={registOnSubmit} >
+                {!login && <form name='registration' method='post' id='registration' onSubmit={registOnSubmit} >
                   {/* input username start */}
                   <div id='inputNickname'>
                     <label style={styles.formLabel} htmlFor='registration_nickname'>Choose your username</label><br />
@@ -279,10 +294,12 @@ function SignUpPage() {
                   </div>
                   {/* input username end */}
 
+                  {!valid && <span style={{color:'#FFEA5E'}}>{error}</span>}
+
                   {/* input password start */}
                   <div id='inputPassword'>
                     <label style={styles.formLabel} htmlFor='registration_password'>Choose your password</label><br />
-                    <input type='text' id='registration_password' name='registration[password]' required
+                    <input type='password' id='registration_password' name='registration[password]' required
                      style={styles.formInput}
                      value={registeration.password}
                      onChange={registOnchangePassword}
@@ -292,7 +309,7 @@ function SignUpPage() {
 
                   <div id='terms' style={styles.formTerms}>
                     <label htmlFor='registration_acceptTerms' style={{marginRight:10}}>
-                      <input type='checkbox' id='registration_acceptTerms' name='registration[acceptTerms]'/>
+                      <input type='checkbox' id='registration_acceptTerms' name='registration[acceptTerms]'required/>
                     </label>
                     <label htmlFor='registration_acceptTerms'>
                       <span>I accept the <a href='/' target='_blank'>Terms and Conditions</a></span><br />
@@ -304,11 +321,18 @@ function SignUpPage() {
                     flexDirection:'column',
                     alignItems:'center',
                   }}><button style={styles.registerBtn}>
-                    <span>PLAY NOW</span>
+                    <span>RIGISTER</span>
                     </button></div>
-                </form>
+                </form>}
+                {login && 
+                <div style={{paddingTop:50}}>
+                  <p style={{color:'#FFEA5E',marginBottom:30}}>Welcome {username}!</p>
+                  <Link to={'/game'}><button style={styles.registerBtn} username={username}>
+                    <span>PLAY NOW</span>
+                    </button></Link>
+                </div>}
               </div>
-              <div id='ipp' style={styles.ipp}>
+              {!login && <div id='ipp' style={styles.ipp}>
                 <span style={{
                   color:'#fff', fontSize:14, lineHeight:1.8
                   }}>Or register with</span>
@@ -332,7 +356,7 @@ function SignUpPage() {
                     }}></div>
                   </a>
                 </div>
-              </div>
+              </div>}
             </div>
             <div style={{
               ...styles.registerEagles,

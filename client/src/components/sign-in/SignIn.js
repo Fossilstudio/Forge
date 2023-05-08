@@ -1,12 +1,13 @@
 /*
  * @Date: 2023-04-27 01:04:03
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-01 23:30:50
- * @FilePath: \Forge\client\src\components\sign-in\SignIn.js
+ * @LastEditTime: 2023-05-08 00:44:12
+ * @FilePath: /Forge/client/src/components/sign-in/SignIn.js
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import {userLoginRequest} from '../../actions/signinActions'
 
 function SignIn() {
   const frameTopBottom = '/resources/login/widget_block_top_bottom.png'
@@ -17,7 +18,14 @@ function SignIn() {
   const playnowBackground = '/resources/login/playnow_box_bg.jpg'
   const registerBackground = '/resources/login/contentbox-foe-iframe-background-s.jpg'
 
-  const [playerName, setPlayerName] = useState('KyleRen')
+  const [login, setLogin] = useState(false)
+  const [playerLogin, setPlayerLogin] = useState({
+    user_name: "",
+    user_password: "",
+  })
+  const [user_name, setUsername] = useState('')
+  const [user_id, setUserID] = useState()
+  const [err, setError] = useState('')
 
   const styles = {
     container:{
@@ -70,6 +78,29 @@ function SignIn() {
       height:146,
       paddingTop:25,
       paddingBottom:10
+    },
+    loginPanel: {
+      backgroundImage:"url("+playnowBackground+")",
+      backgroundRepeat:'no-repeat',
+      margin:2,
+      width:280,
+      height:274,
+      paddingTop:10,
+      paddingBottom:10
+    },
+    loginForm: {
+      display:'flex',
+      flexDirection:'column',
+      alignItems:'center',
+      padding:10,
+    },
+    loginFlex: {
+      display:'flex',
+      flexDirection:'column',
+      alignItems:'center',
+      height:410,
+      backgroundImage:"url("+frameFlex+")",
+      backgroundRepeat: 'repeat-y',
     }
   }
 
@@ -81,37 +112,49 @@ function SignIn() {
     e.target.style.color = '#ee8f0f'
   }
 
+  const loginOnChangeName = (e) => {
+    const username = e.target.value
+    let player={...playerLogin}
+    player.user_name = username
+    setPlayerLogin(player)    
+  }
+
+  const loginOnchangePassword = (e) => {
+    const password = e.target.value
+    let player={...playerLogin}
+    player.user_password = password
+    setPlayerLogin(player)    
+  }
+
+  const loginOnSubmit = (e)=>{
+    e.preventDefault()
+    userLoginRequest(playerLogin)
+    .then((res)=>{
+      console.log(res.data)
+      setLogin(true)
+      setUsername(res.data.user_name)
+      setUserID(res.data.id)
+    })
+    .catch((err)=>{
+      setError(err.response.data)
+    })
+  }
+
+  useEffect(()=>{
+    console.log(user_id)
+  },[user_id])
+
   return (
     <div className="sign-in-form" style={styles.container}>
       <div id='login_top' style={styles.topBottom}></div>
-      <div id='login_flex' style={{
-        display:'flex',
-        flexDirection:'column',
-        alignItems:'center',
-        height:410,
-        backgroundImage:"url("+frameFlex+")",
-        backgroundRepeat: 'repeat-y',
-      }}>
-        <div id='login-panel' style={{
-          backgroundImage:"url("+playnowBackground+")",
-          backgroundRepeat:'no-repeat',
-          margin:2,
-          width:280,
-          height:274,
-          paddingTop:10,
-          paddingBottom:10
-        }}>
-          <div id='sign-in-form-wrap' style={{display:"block"}}>
-            <form id='sign-in-form' style={{
-              display:'flex',
-              flexDirection:'column',
-              alignItems:'center',
-              padding:10,
-            }}>
-              <input type='text' style={styles.input} placeholder='player name'></input>
-              <input type='password' style={styles.input} placeholder='password'></input>
+      <div id='login_flex' style={styles.loginFlex}>
+        <div id='login-panel' style={styles.loginPanel}>
+          {!login && <div id='sign-in-form-wrap' style={{display:"block"}}>
+            <form id='sign-in-form' style={styles.loginForm} onSubmit={loginOnSubmit}>
+              <input type='text' style={styles.input} placeholder='player name' onChange={loginOnChangeName} />
+              <input type='password' style={styles.input} placeholder='password' onChange={loginOnchangePassword}></input>
               <label>
-                <input type='checkbox' />
+                <input type='checkbox'/>
                 <span>Remember me</span>
               </label>
               <button type='submit' style={styles.signInBtn}><span>LOGIN</span></button>
@@ -156,16 +199,18 @@ function SignIn() {
                 </div>
               </div>
             </div>
-          </div>
-          <div id='welcome_message' style={{display:'none',textAlign:'center'}}>
+          </div>}
+          {login && <div id='welcome_message' style={{textAlign:'center'}}>
             <p style={{
               lineHeight:'140%',
               fontSize:'130%',
               margin:0,
               paddingTop:5
-            }}>Welcome,<br/>you are logged in as<br/><span style={{color:'#ffc34e'}}>{playerName}</span></p>
-            <button style={styles.signInBtn}><span>PLAY</span></button>
-            <p>You aren't <span style={{color:'#ffc34e'}}>{playerName}</span>?</p>
+            }}>Welcome,<br/>you are logged in as<br/><span style={{color:'#ffc34e'}}>{user_name}</span></p>
+            <Link to='/game' state={{id:user_id}}>
+              <button style={styles.signInBtn}><span>PLAY</span></button>
+            </Link>
+            <p>You aren't <span style={{color:'#ffc34e'}}>{user_name}</span>?</p>
             <button style={{
               background:'transparent',
               color:'#fff',
@@ -174,7 +219,7 @@ function SignIn() {
             }}><span style={{
               textDecoration:'underline'
             }}>Log out!</span></button>
-          </div>
+          </div>}
           
         </div>
         <div id='register-panel' style={styles.registerPanel}>

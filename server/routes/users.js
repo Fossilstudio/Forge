@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-04-30 22:20:40
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-07 03:30:53
+ * @LastEditTime: 2023-05-08 00:46:22
  * @FilePath: /Forge/server/routes/users.js
  */
 import express from 'express'
@@ -15,7 +15,7 @@ const vailidateInput = (data) => {
   let error = ''
 
   return UsersLogin.query({
-    where:{username:data.username}
+    where:{user_name:data.user_name}
   }).fetch()
     .then(()=>{
       error = 'This username is exist.'
@@ -26,26 +26,44 @@ const vailidateInput = (data) => {
     })
 }
 
+const vailidateLogin = (data) => {
+  
+  return UsersLogin.query({
+    select:['id','user_name','user_password'] ,
+    where:{user_name:data.user_name}
+  }).fetch()
+}
+
 
 router.get('/',(req,res)=>{
-  console.log('get success')
+  vailidateLogin(req.query)
+  .then((userData)=>{
+    const hash = userData.attributes.user_password
+    bcrypt.compare(req.query.user_password, hash, function(err,result){
+      if(result) {
+        res.json(userData)
+      }
+      else {res.status(406).json(err)}
+    })
+  })
+  .catch((err)=>{
+    res.status(405).json(err)
+  })
 })
 
 router.post('/',(req,res)=>{
   vailidateInput(req.body.query).then(({error,isValid})=>{
     if (isValid) {
-      console.log(req.body.query)
-      const {username, password} = req.body.query;
-      const password_digest = bcrypt.hashSync(password, 10)
-      console.log(username,password_digest)
+      const {user_name, user_password} = req.body.query;
+      const password_digest = bcrypt.hashSync(user_password, 10)
 
       let newUser = UsersLogin.forge({
-        username:username, password:password_digest
+        user_name:user_name, user_password:password_digest
       })
 
       newUser.save()
         .then(function(user) {
-          res.json({ success: true , username:username});
+          res.json({ success: true , user_name:user_name});
         }).catch(function(err) {
           res.status(500).json({ errors: err })
         });

@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-04-26 12:30:37
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-07 03:31:27
+ * @LastEditTime: 2023-05-07 22:34:21
  * @FilePath: /Forge/client/src/components/sign-up/SignUpPage.js
  */
 import React from 'react';
@@ -22,8 +22,8 @@ function SignUpPage() {
   const buttonBackground = '/resources/login/form-foe-button-iframe.png'
 
   const [registeration, setRegisteration] = useState({
-    username: "",
-    password: "",
+    user_name: "",
+    user_password: "",
   })
 
   const [valid, setValid] = useState(true)
@@ -170,14 +170,14 @@ function SignUpPage() {
   const registOnchangeName = (e) => {
     const username = e.target.value
     let player={...registeration}
-    player.username = username
+    player.user_name = username
     setRegisteration(player)    
   }
 
   const registOnchangePassword = (e) => {
     const password = e.target.value
     let player={...registeration}
-    player.password = password
+    player.user_password = password
     setRegisteration(player)
   }
   
@@ -188,7 +188,7 @@ function SignUpPage() {
         console.log('regist success')
         console.log(res)
         setLogin(true)
-        setUsername(res.data.username)
+        setUsername(res.data.user_name)
       })
       .catch((err)=>{
         setValid(false)

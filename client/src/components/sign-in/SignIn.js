@@ -1,11 +1,11 @@
 /*
  * @Date: 2023-04-27 01:04:03
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-08 00:44:12
+ * @LastEditTime: 2023-05-12 00:35:27
  * @FilePath: /Forge/client/src/components/sign-in/SignIn.js
  */
-import React, { useEffect } from 'react';
-import { useState } from 'react';
+import React from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {userLoginRequest} from '../../actions/signinActions'
 
@@ -26,16 +26,17 @@ function SignIn() {
   const [user_name, setUsername] = useState('')
   const [user_id, setUserID] = useState()
   const [err, setError] = useState('')
+  const [isRemeberMe, setIsRemeberMe] = useState(false)
 
   const styles = {
     container:{
-      width:293,
       height:400,
       padding:5,
     },
     topBottom:{
       height:8,
       backgroundImage:"url("+frameTopBottom+")",
+      backgroundSize:'cover'
     },
     input:{
       width:190,
@@ -101,6 +102,7 @@ function SignIn() {
       height:410,
       backgroundImage:"url("+frameFlex+")",
       backgroundRepeat: 'repeat-y',
+      backgroundSize:'contain'
     }
   }
 
@@ -116,7 +118,7 @@ function SignIn() {
     const username = e.target.value
     let player={...playerLogin}
     player.user_name = username
-    setPlayerLogin(player)    
+    setPlayerLogin(player)
   }
 
   const loginOnchangePassword = (e) => {
@@ -130,19 +132,42 @@ function SignIn() {
     e.preventDefault()
     userLoginRequest(playerLogin)
     .then((res)=>{
-      console.log(res.data)
       setLogin(true)
       setUsername(res.data.user_name)
       setUserID(res.data.id)
+      if (isRemeberMe) {
+        const localItem = {
+          username:res.data.user_name,
+          isRemeberMe: isRemeberMe
+        }
+        localStorage.setItem('remeberMe',JSON.stringify(localItem))
+      } else {
+        localStorage.clear()
+      }
     })
     .catch((err)=>{
       setError(err.response.data)
     })
   }
 
+  const remeberMeOnChange  = (e) => {
+    setIsRemeberMe(e.target.checked)
+  }
+
   useEffect(()=>{
-    console.log(user_id)
-  },[user_id])
+    const localItem = JSON.parse(localStorage.getItem('remeberMe'))
+    console.log(localItem)
+    if (localItem !== null) {
+      setIsRemeberMe(true)
+      setUsername(localItem.username)
+      let player={...playerLogin}
+      player.user_name = localItem.username
+      setPlayerLogin(player)
+    }else {
+      setIsRemeberMe(false)
+    }
+    console.log(isRemeberMe)
+  },[])
 
   return (
     <div className="sign-in-form" style={styles.container}>
@@ -151,10 +176,10 @@ function SignIn() {
         <div id='login-panel' style={styles.loginPanel}>
           {!login && <div id='sign-in-form-wrap' style={{display:"block"}}>
             <form id='sign-in-form' style={styles.loginForm} onSubmit={loginOnSubmit}>
-              <input type='text' style={styles.input} placeholder='player name' onChange={loginOnChangeName} />
+              <input type='text' style={styles.input} placeholder='player name' onChange={loginOnChangeName} defaultValue={user_name}/>
               <input type='password' style={styles.input} placeholder='password' onChange={loginOnchangePassword}></input>
               <label>
-                <input type='checkbox'/>
+                <input type='checkbox' onChange={remeberMeOnChange} checked={isRemeberMe}/>
                 <span>Remember me</span>
               </label>
               <button type='submit' style={styles.signInBtn}><span>LOGIN</span></button>

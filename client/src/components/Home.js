@@ -1,8 +1,8 @@
 /*
  * @Date: 2023-04-26 12:26:06
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-01 23:25:20
- * @FilePath: \Forge\client\src\components\Home.js
+ * @LastEditTime: 2023-05-12 23:08:12
+ * @FilePath: /Forge/client/src/components/Home.js
  */
 import React from 'react';
 import {Link} from 'react-router-dom'
@@ -23,6 +23,7 @@ function Home() {
   const styles = {
     container: {
       backgroundImage:"url("+wallpaper+")",
+      backgroundSize:'cover',
       color:'#fff',
       height:"100vh",
       paddingTop:40,

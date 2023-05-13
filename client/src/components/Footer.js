@@ -1,10 +1,13 @@
 /*
  * @Date: 2023-04-26 12:25:14
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-01 14:14:10
- * @FilePath: \Forge\client\src\components\Footer.js
+ * @LastEditTime: 2023-05-12 23:12:07
+ * @FilePath: /Forge/client/src/components/Footer.js
  */
 import React from 'react';
+
+const linkedinLink = 'https://www.linkedin.com/in/ke-ren/'
+const githubLink = 'https://github.com/Fossilstudio'
 
 function Footer() {
   const contentBack = '../resources/login/content_bg.jpg'
@@ -34,8 +37,8 @@ function Footer() {
       }}>
         <li style={{...styles.li,borderRight:'1px solid'}}><a style={styles.footerLink} href='/'>Home</a></li>
         <li style={{...styles.li,borderRight:'1px solid'}}><a style={styles.footerLink} href='/'>gallery</a></li>
-        <li style={{...styles.li,borderRight:'1px solid'}}><a style={styles.footerLink} href='/'>Github</a></li>
-        <li style={{...styles.li,borderRight:'1px solid'}}><a style={styles.footerLink} href='/'>LinkdIn</a></li>
+        <li style={{...styles.li,borderRight:'1px solid'}}><a style={styles.footerLink} href={githubLink}   target='_blank' rel='noreferrer'>Github</a></li>
+        <li style={{...styles.li,borderRight:'1px solid'}}><a style={styles.footerLink} href={linkedinLink} target='_blank' rel='noreferrer'>LinkdIn</a></li>
         <li style={{...styles.li,borderRight:'1px solid'}}><a style={styles.footerLink} href='/'>Help</a></li>
         <li style={styles.li}><a style={styles.footerLink} href='/'>Contact</a></li>
       </ul>

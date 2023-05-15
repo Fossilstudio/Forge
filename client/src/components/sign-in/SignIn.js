@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-04-27 01:04:03
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-12 00:35:27
+ * @LastEditTime: 2023-05-13 10:32:25
  * @FilePath: /Forge/client/src/components/sign-in/SignIn.js
  */
 import React from 'react';
@@ -156,7 +156,6 @@ function SignIn() {
 
   useEffect(()=>{
     const localItem = JSON.parse(localStorage.getItem('remeberMe'))
-    console.log(localItem)
     if (localItem !== null) {
       setIsRemeberMe(true)
       setUsername(localItem.username)
@@ -166,7 +165,6 @@ function SignIn() {
     }else {
       setIsRemeberMe(false)
     }
-    console.log(isRemeberMe)
   },[])
 
   return (

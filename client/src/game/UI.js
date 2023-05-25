@@ -1,12 +1,13 @@
 /*
  * @Date: 2023-04-26 12:38:56
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-22 01:04:44
+ * @LastEditTime: 2023-05-25 00:18:45
  * @FilePath: /Forge/client/src/game/UI.js
  */
 import React, { useEffect, useState } from 'react';
 import { Stage, Layer, Image, Text, Rect, Line, Group } from 'react-konva';
 import useImage from 'use-image';
+import { getUserData, updateData, getUserName } from '../actions/getAndUpdate';
 
 const hudurl = '/resources/game/hud/hud.png'
 const iconsUrl = '/resources/game/icons/icons.png'
@@ -16,11 +17,10 @@ const tipUrl = '/resources/game/tooltip/tooltip.png'
 function UI(props) {
   const user_id = props.user_id
   const [image] = useImage(hudurl)
+  const [userName, setUserName] = useState('')
   
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const [windowHeight, setWindowHeight] = useState(window.innerHeight)
-  const [population, setPopulation] = useState(10)
-  const [happinessData, setHappinessData] = useState(0)
   const [goods, setGoods] = useState({
     good1:{name:'wood',amount:1},
     good2:{name:'stone',amount:2},
@@ -28,13 +28,25 @@ function UI(props) {
     good4:{name:'marble',amount:4},
     good5:{name:'dye',amount:5},
   })
-  const [forgePoints, setForgePoints] = useState(1)
-  const [age, setAge] = useState('Stone Age')
-  const [diamonds, setDiamonds] = useState(100)
-  const [medals, setMedals] = useState(100)
-  const [supplies, setSupplies] = useState(200)
-  const [gold, setGold] = useState(1000) 
+  const [userData, setUserData] = useState({})
 
+  useEffect(()=>{
+    getUserData(user_id)
+      .then((user_data)=>{
+        setUserData(user_data.data)
+      })
+      .catch((err)=>{
+        console.log(err)
+      })
+    getUserName(user_id)
+      .then((userData)=>{
+        console.log(userData.data)
+        setUserName(userData.data.user_name)
+      })
+      .catch((err)=>{
+        console.log(err)
+      })
+  },[])
 
   const castleIcon = {
     url:iconsUrl, 
@@ -86,8 +98,12 @@ function UI(props) {
 
 
   useEffect(()=>{
-    window.addEventListener('resize',()=>{setWindowWidth(window.innerWidth);setWindowHeight(window.innerHeight)})
-    return()=>window.removeEventListener('resize',()=>{setWindowWidth(window.innerWidth);setWindowHeight(window.innerHeight)})
+    window.addEventListener('resize',()=>{
+      if (window.innerWidth<1400) {
+        setWindowWidth(1400)
+      }else {setWindowWidth(window.innerWidth)}
+      setWindowHeight(window.innerHeight)
+    })
   })
   
   return (
@@ -100,25 +116,25 @@ function UI(props) {
           />
           <Group id='hud-left-group'>
             <Group id='hud-username'>
-              <TextBox text={user_id} width={100} x={10} y={8} icon={castleIcon}/>
+              <TextBox text={userName} width={100} x={10} y={8} icon={castleIcon}/>
               <Line x={112} y={6} points={[0,0,0,24]} stroke='#301B0B' strokeWidth={1}/>
             </Group>
             <Group id='hud-rank'>
               <TextBox text={'100'} width={100} x={114} y={8} icon={rankIcon}/>
               <Line x={216} y={6} points={[0,0,0,24]} stroke='#301B0B' strokeWidth={1}/>
             </Group>
-            <TextBox text={population} width={100} x={218} y={8} icon={populationicon}/>
+            <TextBox text={userData.user_population} width={100} x={218} y={8} icon={populationicon}/>
             <Goods goods={goods} goodsIcon={goodsIcon}/>
-            <Happiness happinessData={happinessData}/>
+            <Happiness happinessData={userData.user_happinessData}/>
           </Group>
-          <ForgePoints forgePoints={forgePoints} age={age}/>
+          <ForgePoints forgePoints={userData.user_forge_points} age={userData.user_age}/>
           <Group id='hud-right-group'>
             <Image image={image} x={windowWidth-35} y={6} crop={{x:299,y:478,width:27,height:27}} width={27} height={27}/>
             <Image image={image} x={windowWidth-65} y={6} crop={{x:243,y:478,width:27,height:27}} width={27} height={27}/>
-            <TextBox text={diamonds} width={100} x={windowWidth-170} y={8} icon={diamondIcon}/>
-            <TextBox text={medals} width={100} x={windowWidth-275} y={8} icon={medalIcon}/>
-            <TextBox text={supplies} width={100} x={windowWidth-380} y={8} icon={supplyIcon}/>
-            <TextBox text={gold} width={100} x={windowWidth-485} y={8} icon={goldIcon}/>
+            <TextBox text={userData.user_diamonds} width={100} x={windowWidth-170} y={8} icon={diamondIcon}/>
+            <TextBox text={userData.user_medals} width={100} x={windowWidth-275} y={8} icon={medalIcon}/>
+            <TextBox text={userData.user_supplies} width={100} x={windowWidth-380} y={8} icon={supplyIcon}/>
+            <TextBox text={userData.user_gold} width={100} x={windowWidth-485} y={8} icon={goldIcon}/>
           </Group>
         </Layer>
       </Stage>
@@ -253,9 +269,9 @@ function ForgePoints({forgePoints, age}) {
   })
 
   useEffect(()=>{
-    if (windowWidth>=1000) {
-      setXposition(windowWidth/2 - 151)
-    }else(setXposition(350))
+    if (windowWidth>=1200) {
+      setXposition(windowWidth/2 - 150)
+    }else(setXposition(380))
   },[windowWidth])
 
   return(

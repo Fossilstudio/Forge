@@ -1,12 +1,12 @@
 /*
  * @Date: 2023-04-26 12:30:37
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-07 22:34:21
+ * @LastEditTime: 2023-05-24 23:11:19
  * @FilePath: /Forge/client/src/components/sign-up/SignUpPage.js
  */
 import React from 'react';
 import { useState } from 'react';
-import { userSignupRequest } from '../../actions/signupActions';
+import { userSignupRequest, initialUserData} from '../../actions/signupActions';
 
 import {Link} from 'react-router-dom'
 
@@ -30,6 +30,7 @@ function SignUpPage() {
   const [login, setLogin] = useState(false)
   const [error, setError] = useState('')
   const [username, setUsername] = useState('')
+  const [userId, setUserId] = useState()
 
   const styles={
     backgroundVideo:{
@@ -186,13 +187,22 @@ function SignUpPage() {
     userSignupRequest(registeration)
       .then((res)=>{
         console.log('regist success')
-        console.log(res)
+        console.log(res.data)
         setLogin(true)
         setUsername(res.data.user_name)
+        setUserId(res.data.user_id)
       })
       .catch((err)=>{
         setValid(false)
+        console.log(err)
         setError(err.response.data)
+      })
+    initialUserData(registeration)
+      .then(()=>{
+        console.log('initial success')
+      })
+      .catch(()=>{
+        console.log('initial failed')
       })
   }
 
@@ -327,7 +337,7 @@ function SignUpPage() {
                 {login && 
                 <div style={{paddingTop:50}}>
                   <p style={{color:'#FFEA5E',marginBottom:30}}>Welcome {username}!</p>
-                  <Link to={'/game'}><button style={styles.registerBtn} username={username}>
+                  <Link to={'/game'} state={{id:userId}}><button style={styles.registerBtn} username={username}>
                     <span>PLAY NOW</span>
                     </button></Link>
                 </div>}

@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-04-26 12:38:56
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-20 01:15:47
+ * @LastEditTime: 2023-05-22 01:04:44
  * @FilePath: /Forge/client/src/game/UI.js
  */
 import React, { useEffect, useState } from 'react';
@@ -237,7 +237,7 @@ function ForgePoints({forgePoints, age}) {
   for (let index = 0; index < forgePoints; index++) {
     const x=index*8+xPosition+88
     points.push(
-      <Image image={image} x={x} y={31} width={7} height={14} crop={{x:573,y:295,width:7,height:14}}/>
+      <Image key={index} image={image} x={x} y={31} width={7} height={14} crop={{x:573,y:295,width:7,height:14}}/>
     )
   }
 

@@ -1,13 +1,14 @@
 /*
  * @Date: 2023-04-30 22:20:40
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-08 00:46:22
+ * @LastEditTime: 2023-05-24 23:02:28
  * @FilePath: /Forge/server/routes/users.js
  */
 import express from 'express'
 import bcrypt from 'bcrypt';
 
 import UsersLogin from '../models/users_login'
+import UsersData from '../models/users_data'
 
 let router = express.Router()
 
@@ -63,15 +64,33 @@ router.post('/',(req,res)=>{
 
       newUser.save()
         .then(function(user) {
-          res.json({ success: true , user_name:user_name});
-        }).catch(function(err) {
+          res.json(user);
+          initialUserData(user.attributes.id,res)
+        })
+        .catch(function(err) {
           res.status(500).json({ errors: err })
         });
+
     } else{
       res.status(400).json(error)
     }
   })
 
+  function initialUserData(userID,res) {
+    let newUserData = UsersData.forge({
+      user_id: userID,
+      user_population:0,
+      user_global_rank:0,
+      user_happiness:0,
+      user_gold:0,
+      user_supplies:0,
+      user_medals:0,
+      user_diamonds:200,
+      user_age: 'Stone Age'
+    })
+
+    newUserData.save()
+  }
   
 })
 

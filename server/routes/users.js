@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-04-30 22:20:40
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-24 23:02:28
+ * @LastEditTime: 2023-05-25 23:04:40
  * @FilePath: /Forge/server/routes/users.js
  */
 import express from 'express'
@@ -9,6 +9,7 @@ import bcrypt from 'bcrypt';
 
 import UsersLogin from '../models/users_login'
 import UsersData from '../models/users_data'
+import UsersGoods from '../models/users_goods'
 
 let router = express.Router()
 
@@ -35,7 +36,7 @@ const vailidateLogin = (data) => {
   }).fetch()
 }
 
-
+// login
 router.get('/',(req,res)=>{
   vailidateLogin(req.query)
   .then((userData)=>{
@@ -52,6 +53,7 @@ router.get('/',(req,res)=>{
   })
 })
 
+// register
 router.post('/',(req,res)=>{
   vailidateInput(req.body.query).then(({error,isValid})=>{
     if (isValid) {
@@ -65,7 +67,8 @@ router.post('/',(req,res)=>{
       newUser.save()
         .then(function(user) {
           res.json(user);
-          initialUserData(user.attributes.id,res)
+          initialUserData(user.attributes.id)
+          initialUserGoods(user.attributes.id)
         })
         .catch(function(err) {
           res.status(500).json({ errors: err })
@@ -76,12 +79,13 @@ router.post('/',(req,res)=>{
     }
   })
 
-  function initialUserData(userID,res) {
+  function initialUserData(userID) {
     let newUserData = UsersData.forge({
       user_id: userID,
       user_population:0,
       user_global_rank:0,
       user_happiness:0,
+      user_forge_points:0,
       user_gold:0,
       user_supplies:0,
       user_medals:0,
@@ -90,6 +94,15 @@ router.post('/',(req,res)=>{
     })
 
     newUserData.save()
+  }
+
+  function initialUserGoods(userID) {
+    let newUserGoods = UsersGoods.forge({
+      user_id: userID,
+      age: 'Stone Age',
+    })
+
+    newUserGoods.save()
   }
   
 })

@@ -1,13 +1,15 @@
 /*
  * @Date: 2023-04-26 12:38:56
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-25 00:18:45
+ * @LastEditTime: 2023-05-26 23:53:33
  * @FilePath: /Forge/client/src/game/UI.js
  */
 import React, { useEffect, useState } from 'react';
 import { Stage, Layer, Image, Text, Rect, Line, Group } from 'react-konva';
 import useImage from 'use-image';
 import { getUserData, updateData, getUserName } from '../actions/getAndUpdate';
+
+import { hour , minute, second, day } from '../fuctions/timeDifference';
 
 const hudurl = '/resources/game/hud/hud.png'
 const iconsUrl = '/resources/game/icons/icons.png'
@@ -29,24 +31,35 @@ function UI(props) {
     good5:{name:'dye',amount:5},
   })
   const [userData, setUserData] = useState({})
+  const [forgeTimer, setForgeTimer] = useState(0)
 
   useEffect(()=>{
-    getUserData(user_id)
+    // fetch user data per second
+    // TODO UPDATE USERSDATA
+    const interval = setInterval(()=>{
+      console.log('fetch data')
+      const time = new Date()
+      console.log(user_id)
+      getUserData(user_id)
       .then((user_data)=>{
         setUserData(user_data.data)
+        const updateDate = new Date(user_data.data.user_forge_update_at)
+        setForgeTimer(time.getTime() - updateDate.getTime())
       })
       .catch((err)=>{
         console.log(err)
       })
-    getUserName(user_id)
+      getUserName(user_id)
       .then((userData)=>{
-        console.log(userData.data)
         setUserName(userData.data.user_name)
       })
       .catch((err)=>{
         console.log(err)
       })
+    }, 1000)
+    return ()=> clearInterval(interval)
   },[])
+
 
   const castleIcon = {
     url:iconsUrl, 
@@ -127,7 +140,7 @@ function UI(props) {
             <Goods goods={goods} goodsIcon={goodsIcon}/>
             <Happiness happinessData={userData.user_happinessData}/>
           </Group>
-          <ForgePoints forgePoints={userData.user_forge_points} age={userData.user_age}/>
+          <ForgePoints userData={userData} forgePoints={userData.user_forge_points} age={userData.user_age} mss={forgeTimer} />
           <Group id='hud-right-group'>
             <Image image={image} x={windowWidth-35} y={6} crop={{x:299,y:478,width:27,height:27}} width={27} height={27}/>
             <Image image={image} x={windowWidth-65} y={6} crop={{x:243,y:478,width:27,height:27}} width={27} height={27}/>
@@ -245,12 +258,40 @@ function GoodsTip({goods}) {
   )
 }
 
-function ForgePoints({forgePoints, age}) {
+function ForgePoints({userData,forgePoints, age, mss,}) {
   const [windowWidth, setWindowWidht] = useState(window.innerWidth)
   const [xPosition, setXposition] = useState(windowWidth/2 - 151)
   const [image] = useImage(hudurl)
+
+  const getHours = ()=>{
+    const hours = hour(mss) + day(mss)*24
+    if (hours<=10) {
+      return hours
+    } else return 10
+  }
+  
+  const getSeconds = ()=>{
+   const  seconds = 60-second(mss)
+   if (seconds<10) {
+    return '0'+seconds
+   }else return seconds
+  }
+
+  const getMinutes = ()=>{
+    const minutes = 60-minute(mss)
+    if(minutes<10) {
+      return '0'+minutes
+    }else if (minutes<=0) {
+      // let newUserData = {...userData}
+      // newUserData['forge_points'] = forgePoints+1
+      // updateUserData(forgePoints+1)
+      return '0'+minutes
+    }else return minutes
+  }
+
   const points = []
-  for (let index = 0; index < forgePoints; index++) {
+
+  for (let index = 0; index < getHours(); index++) {
     const x=index*8+xPosition+88
     points.push(
       <Image key={index} image={image} x={x} y={31} width={7} height={14} crop={{x:573,y:295,width:7,height:14}}/>
@@ -258,9 +299,9 @@ function ForgePoints({forgePoints, age}) {
   }
 
   const pointsText = ()=>{
-    if(forgePoints<10) {
-      return '0'+forgePoints
-    }else return forgePoints
+    if(getHours()<10) {
+      return '0'+ getHours()
+    }else return getHours()
   }
 
   useEffect(()=>{
@@ -281,6 +322,9 @@ function ForgePoints({forgePoints, age}) {
       {points}
       <Image image={image} x={xPosition+169} y={31} crop={{x:328,y:479,height:15,width:15}} width={15} height={15}/>
       <Text text={age} fontSize={15} x={xPosition+56} y={10} fill='#EACE9A' fontStyle='bold' align='center' width={140}/>
+      <Image image={image} x={xPosition+86} y={48} crop={{x:64,y:478,height:25,width:79}} width={79} height={25}/>
+      <Text text={getMinutes()+' :'} fontSize={11} x={xPosition+122} y={55} fill='#EACE9A' fontStyle='bold' align='left' width={140}/>
+      <Text text={getSeconds()} fontSize={11} x={xPosition+143} y={55} fill='#EACE9A' fontStyle='bold' align='left' width={140}/>
     </Group>
   )
 }

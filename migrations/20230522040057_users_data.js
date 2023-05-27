@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-05-04 23:51:24
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-22 00:05:59
+ * @LastEditTime: 2023-05-25 23:17:21
  * @FilePath: /Forge/migrations/20230522040057_users_data.js
  */
 /**
@@ -15,6 +15,8 @@ exports.up = function(knex, Promise) {
     table.integer('user_global_rank')
     table.integer('user_population')
     table.integer('user_happiness')
+    table.integer('user_forge_points')
+    table.timestamp('user_forge_update_at').defaultTo(knex.fn.now())
     table.integer('user_goods')
     table.integer('user_gold')
     table.integer('user_supplies')

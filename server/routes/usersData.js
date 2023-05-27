@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-05-22 00:59:21
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-24 23:39:19
+ * @LastEditTime: 2023-05-26 23:01:09
  * @FilePath: /Forge/server/routes/usersData.js
  */
 import express from 'express'
@@ -11,7 +11,6 @@ import UsersData from '../models/users_data'
 let router = express.Router()
 
 router.get('/',(req,res)=> {
-  console.log( req )
   let err = ''
   UsersData.query({
     where:{user_id:req.query.userID}
@@ -26,7 +25,23 @@ router.get('/',(req,res)=> {
 })
 
 router.post('/',(req,res)=>{
-  console.log(req.query)
+  console.log(req.body.query)
+  let err = ''
+  // UsersData.where({user_id:req.query.user_id}).update({user_forge_points:1})
 })
+
+// router.post('/',(req,res)=>{
+//   console.log(req.query)
+//   let err = ''
+//   UsersData.query({
+//     where:{user_id:req.query.user_id}
+//   }).update(req.query.userData)
+//     .then(()=>{
+//       console.log('update')
+//     })
+//     .catch(()=>{
+//       console.log('updtae failed')
+//     })
+// })
 
 export default router

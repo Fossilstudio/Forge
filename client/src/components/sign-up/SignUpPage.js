@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-04-26 12:30:37
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-24 23:11:19
+ * @LastEditTime: 2023-05-25 22:53:34
  * @FilePath: /Forge/client/src/components/sign-up/SignUpPage.js
  */
 import React from 'react';
@@ -190,7 +190,7 @@ function SignUpPage() {
         console.log(res.data)
         setLogin(true)
         setUsername(res.data.user_name)
-        setUserId(res.data.user_id)
+        setUserId(res.data.id)
       })
       .catch((err)=>{
         setValid(false)

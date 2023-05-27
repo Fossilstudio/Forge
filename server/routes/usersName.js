@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-05-22 00:59:21
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-25 00:02:07
+ * @LastEditTime: 2023-05-25 22:33:32
  * @FilePath: /Forge/server/routes/usersName.js
  */
 import express from 'express'
@@ -10,7 +10,6 @@ import UsersLogin from '../models/users_login'
 let router = express.Router()
 
 router.get('/',(req,res)=> {
-  console.log( req )
   let err = ''
   UsersLogin.query({
     select:['id','user_name'],

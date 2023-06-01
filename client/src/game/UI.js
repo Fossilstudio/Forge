@@ -1,13 +1,13 @@
 /*
  * @Date: 2023-04-26 12:38:56
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-26 23:53:33
+ * @LastEditTime: 2023-06-01 01:19:04
  * @FilePath: /Forge/client/src/game/UI.js
  */
 import React, { useEffect, useState } from 'react';
 import { Stage, Layer, Image, Text, Rect, Line, Group } from 'react-konva';
 import useImage from 'use-image';
-import { getUserData, updateData, getUserName } from '../actions/getAndUpdate';
+import { getUserData, updateDataForge, getUserName, spendForge } from '../actions/getAndUpdate';
 
 import { hour , minute, second, day } from '../fuctions/timeDifference';
 
@@ -34,12 +34,29 @@ function UI(props) {
   const [forgeTimer, setForgeTimer] = useState(0)
 
   useEffect(()=>{
+    const mountDate = new Date()
+    getUserData(user_id)
+      .then((user_data)=>{
+        setUserData(user_data.data)
+        const updateDate = new Date(user_data.data.user_forge_update_at)
+        setForgeTimer(mountDate.getTime() - updateDate.getTime())
+      })
+      .catch((err)=>{
+        console.log(err)
+      })
+      getUserName(user_id)
+      .then((userData)=>{
+        setUserName(userData.data.user_name)
+      })
+      .catch((err)=>{
+        console.log(err)
+      })
+
     // fetch user data per second
     // TODO UPDATE USERSDATA
     const interval = setInterval(()=>{
-      console.log('fetch data')
+      // console.log('fetch data')
       const time = new Date()
-      console.log(user_id)
       getUserData(user_id)
       .then((user_data)=>{
         setUserData(user_data.data)
@@ -109,7 +126,6 @@ function UI(props) {
     cropy:1194
   }
 
-
   useEffect(()=>{
     window.addEventListener('resize',()=>{
       if (window.innerWidth<1400) {
@@ -133,7 +149,7 @@ function UI(props) {
               <Line x={112} y={6} points={[0,0,0,24]} stroke='#301B0B' strokeWidth={1}/>
             </Group>
             <Group id='hud-rank'>
-              <TextBox text={'100'} width={100} x={114} y={8} icon={rankIcon}/>
+              <TextBox text={userData.user_global_rank} width={100} x={114} y={8} icon={rankIcon}/>
               <Line x={216} y={6} points={[0,0,0,24]} stroke='#301B0B' strokeWidth={1}/>
             </Group>
             <TextBox text={userData.user_population} width={100} x={218} y={8} icon={populationicon}/>
@@ -258,33 +274,41 @@ function GoodsTip({goods}) {
   )
 }
 
-function ForgePoints({userData,forgePoints, age, mss,}) {
+function ForgePoints({userData,forgePoints, age, mss, updateUserData}) {
   const [windowWidth, setWindowWidht] = useState(window.innerWidth)
   const [xPosition, setXposition] = useState(windowWidth/2 - 151)
   const [image] = useImage(hudurl)
 
+  const handleUpdate = (userData)=>{
+    updateDataForge(userData)
+    .then((res)=>{
+      console.log(res.data)
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
+  }
+
   const getHours = ()=>{
-    const hours = hour(mss) + day(mss)*24
+    const hours = hour(mss) + day(mss)*24 + forgePoints
     if (hours<=10) {
       return hours
     } else return 10
   }
   
   const getSeconds = ()=>{
-   const  seconds = 60-second(mss)
+   const  seconds = 59-second(mss)
    if (seconds<10) {
     return '0'+seconds
    }else return seconds
   }
 
   const getMinutes = ()=>{
-    const minutes = 60-minute(mss)
+    const minutes = 59-minute(mss)
+    console.log(minutes)
     if(minutes<10) {
       return '0'+minutes
     }else if (minutes<=0) {
-      // let newUserData = {...userData}
-      // newUserData['forge_points'] = forgePoints+1
-      // updateUserData(forgePoints+1)
       return '0'+minutes
     }else return minutes
   }
@@ -315,6 +339,25 @@ function ForgePoints({userData,forgePoints, age, mss,}) {
     }else(setXposition(380))
   },[windowWidth])
 
+  const spendForges = ()=>{
+    let newUserData = {...userData}
+    let points = hour(mss) + day(mss)*24 + forgePoints
+    
+    if (points>=1) {
+      if (points>=10) {
+        points = 10
+      }
+      newUserData['user_forge_points'] = points -1
+      spendForge(newUserData)
+      .then((res)=>{
+        console.log(res.data)
+      })
+      .catch((err)=>{
+        console.log(err)
+      })
+    }
+  }
+
   return(
     <Group id='forge-points'>
       <Image image={image} x={xPosition} y={0} crop={{x:584,y:263,height:50,width:250}} width={252} height={50}/>
@@ -325,6 +368,7 @@ function ForgePoints({userData,forgePoints, age, mss,}) {
       <Image image={image} x={xPosition+86} y={48} crop={{x:64,y:478,height:25,width:79}} width={79} height={25}/>
       <Text text={getMinutes()+' :'} fontSize={11} x={xPosition+122} y={55} fill='#EACE9A' fontStyle='bold' align='left' width={140}/>
       <Text text={getSeconds()} fontSize={11} x={xPosition+143} y={55} fill='#EACE9A' fontStyle='bold' align='left' width={140}/>
+      <Text text={'spend forge'} fontSize={11} x={xPosition+143} y={90} fill='#EACE9A' fontStyle='bold' align='center' width={140} onClick={spendForges}/>
     </Group>
   )
 }

@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-05-22 00:59:21
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-05-26 23:01:09
+ * @LastEditTime: 2023-06-01 01:10:03
  * @FilePath: /Forge/server/routes/usersData.js
  */
 import express from 'express'
@@ -25,23 +25,48 @@ router.get('/',(req,res)=> {
 })
 
 router.post('/',(req,res)=>{
-  console.log(req.body.query)
-  let err = ''
-  // UsersData.where({user_id:req.query.user_id}).update({user_forge_points:1})
+  res.json('post users_data/')
 })
 
-// router.post('/',(req,res)=>{
-//   console.log(req.query)
-//   let err = ''
-//   UsersData.query({
-//     where:{user_id:req.query.user_id}
-//   }).update(req.query.userData)
-//     .then(()=>{
-//       console.log('update')
-//     })
-//     .catch(()=>{
-//       console.log('updtae failed')
-//     })
-// })
+router.post('/forge',(req,res)=>{
+  let userData = req.body.query
+  const date = new Date()
+  console.log(req.body.query)
+  UsersData.query({
+    where:{user_id: userData.user_id},
+    update:{
+      user_forge_points: userData.user_forge_points,
+      // user_forge_update_at: date,
+      // updated_at: date,
+    }
+  }).fetch()
+    .then(()=>{
+      res.json('update')
+    })
+    .catch((err)=>{
+      res.status(401).json(err)
+    })
+})
+
+router.post('/spendForge',(req,res)=>{
+  let userData = req.body.query
+  const date = new Date()
+  console.log(req.body.query)
+  UsersData.query({
+    where:{user_id: userData.user_id},
+    update:{
+      user_forge_points: userData.user_forge_points,
+      user_forge_update_at: date,
+      updated_at: date,
+    }
+  }).fetch()
+    .then(()=>{
+      res.json('update')
+    })
+    .catch((err)=>{
+      res.status(401).json(err)
+    })
+})
+
 
 export default router

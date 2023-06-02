@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-05-22 00:59:21
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-06-01 01:10:03
+ * @LastEditTime: 2023-06-01 23:53:37
  * @FilePath: /Forge/server/routes/usersData.js
  */
 import express from 'express'
@@ -31,21 +31,24 @@ router.post('/',(req,res)=>{
 router.post('/forge',(req,res)=>{
   let userData = req.body.query
   const date = new Date()
-  console.log(req.body.query)
-  UsersData.query({
-    where:{user_id: userData.user_id},
-    update:{
-      user_forge_points: userData.user_forge_points,
-      // user_forge_update_at: date,
-      // updated_at: date,
-    }
-  }).fetch()
-    .then(()=>{
-      res.json('update')
-    })
-    .catch((err)=>{
-      res.status(401).json(err)
-    })
+  if (userData.user_id === 0) {
+    res.json('loading')
+  }else {
+    UsersData.query({
+      where:{user_id: userData.user_id},
+      update:{
+        user_forge_points: userData.user_forge_points+userData.increatePoints,
+        user_forge_update_at: date,
+        // updated_at: date,
+      }
+    }).fetch()
+      .then(()=>{
+        res.json('update')
+      })
+      .catch((err)=>{
+        res.status(401).json(err)
+      })
+  }
 })
 
 router.post('/spendForge',(req,res)=>{

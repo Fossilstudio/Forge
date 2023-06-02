@@ -1,15 +1,15 @@
 /*
  * @Date: 2023-04-26 12:38:56
  * @LastEditors: Ke Ren
- * @LastEditTime: 2023-06-01 01:19:04
+ * @LastEditTime: 2023-06-01 23:47:26
  * @FilePath: /Forge/client/src/game/UI.js
  */
 import React, { useEffect, useState } from 'react';
 import { Stage, Layer, Image, Text, Rect, Line, Group } from 'react-konva';
 import useImage from 'use-image';
-import { getUserData, updateDataForge, getUserName, spendForge } from '../actions/getAndUpdate';
+import { getUserData, getUserName } from '../actions/getAndUpdate';
 
-import { hour , minute, second, day } from '../fuctions/timeDifference';
+import Forge from './ui-components/Forge';
 
 const hudurl = '/resources/game/hud/hud.png'
 const iconsUrl = '/resources/game/icons/icons.png'
@@ -30,7 +30,17 @@ function UI(props) {
     good4:{name:'marble',amount:4},
     good5:{name:'dye',amount:5},
   })
-  const [userData, setUserData] = useState({})
+  const [userData, setUserData] = useState({
+    user_id:0,
+    user_global_rank:0,
+    user_population:0,
+    user_happiness:0,
+    user_forge_points:0,
+    user_gold:0,
+    user_supplies:0,
+    user_medals:0,
+    user_diamonds:0
+  })
   const [forgeTimer, setForgeTimer] = useState(0)
 
   useEffect(()=>{
@@ -55,7 +65,6 @@ function UI(props) {
     // fetch user data per second
     // TODO UPDATE USERSDATA
     const interval = setInterval(()=>{
-      // console.log('fetch data')
       const time = new Date()
       getUserData(user_id)
       .then((user_data)=>{
@@ -154,9 +163,10 @@ function UI(props) {
             </Group>
             <TextBox text={userData.user_population} width={100} x={218} y={8} icon={populationicon}/>
             <Goods goods={goods} goodsIcon={goodsIcon}/>
-            <Happiness happinessData={userData.user_happinessData}/>
+            <Happiness happiness={userData.user_happiness}/>
           </Group>
-          <ForgePoints userData={userData} forgePoints={userData.user_forge_points} age={userData.user_age} mss={forgeTimer} />
+          <Forge user_id = {userData.user_id} user_forge_points = {userData.user_forge_points} mss={forgeTimer} age={userData.user_age}/>
+          {/* <ForgePoints userData={userData} forgePoints={userData.user_forge_points} age={userData.user_age} mss={forgeTimer} /> */}
           <Group id='hud-right-group'>
             <Image image={image} x={windowWidth-35} y={6} crop={{x:299,y:478,width:27,height:27}} width={27} height={27}/>
             <Image image={image} x={windowWidth-65} y={6} crop={{x:243,y:478,width:27,height:27}} width={27} height={27}/>
@@ -185,12 +195,12 @@ function TextBox({text,width,x,y,icon}) {
   )
 }
 
-function Happiness ({happinessData}) {
+function Happiness ({happiness}) {
   const [iconurl] = useImage(hudurl)
   let x
-  if (happinessData >= 100) {
+  if (happiness >= 100) {
     x=353
-  }else if (happinessData >= 0) {
+  }else if (happiness >= 0) {
     x=404
   }else x=455
 
@@ -270,105 +280,6 @@ function GoodsTip({goods}) {
         <Image image={iconurl} x={tipX+15} y={tipY+168} crop={{x:370,y:172,height:5,width:25}} width={60} height={5}/>
         <Image image={iconurl} x={tipX+75} y={tipY+168} crop={{x:381,y:172,height:5,width:24}} width={24} height={5}/>
       </Group>
-    </Group>
-  )
-}
-
-function ForgePoints({userData,forgePoints, age, mss, updateUserData}) {
-  const [windowWidth, setWindowWidht] = useState(window.innerWidth)
-  const [xPosition, setXposition] = useState(windowWidth/2 - 151)
-  const [image] = useImage(hudurl)
-
-  const handleUpdate = (userData)=>{
-    updateDataForge(userData)
-    .then((res)=>{
-      console.log(res.data)
-    })
-    .catch((err)=>{
-      console.log(err)
-    })
-  }
-
-  const getHours = ()=>{
-    const hours = hour(mss) + day(mss)*24 + forgePoints
-    if (hours<=10) {
-      return hours
-    } else return 10
-  }
-  
-  const getSeconds = ()=>{
-   const  seconds = 59-second(mss)
-   if (seconds<10) {
-    return '0'+seconds
-   }else return seconds
-  }
-
-  const getMinutes = ()=>{
-    const minutes = 59-minute(mss)
-    console.log(minutes)
-    if(minutes<10) {
-      return '0'+minutes
-    }else if (minutes<=0) {
-      return '0'+minutes
-    }else return minutes
-  }
-
-  const points = []
-
-  for (let index = 0; index < getHours(); index++) {
-    const x=index*8+xPosition+88
-    points.push(
-      <Image key={index} image={image} x={x} y={31} width={7} height={14} crop={{x:573,y:295,width:7,height:14}}/>
-    )
-  }
-
-  const pointsText = ()=>{
-    if(getHours()<10) {
-      return '0'+ getHours()
-    }else return getHours()
-  }
-
-  useEffect(()=>{
-    window.addEventListener('resize',()=>{setWindowWidht(window.innerWidth)})
-    return()=>window.removeEventListener('resize',()=>{setWindowWidht(window.innerWidth)})
-  })
-
-  useEffect(()=>{
-    if (windowWidth>=1200) {
-      setXposition(windowWidth/2 - 150)
-    }else(setXposition(380))
-  },[windowWidth])
-
-  const spendForges = ()=>{
-    let newUserData = {...userData}
-    let points = hour(mss) + day(mss)*24 + forgePoints
-    
-    if (points>=1) {
-      if (points>=10) {
-        points = 10
-      }
-      newUserData['user_forge_points'] = points -1
-      spendForge(newUserData)
-      .then((res)=>{
-        console.log(res.data)
-      })
-      .catch((err)=>{
-        console.log(err)
-      })
-    }
-  }
-
-  return(
-    <Group id='forge-points'>
-      <Image image={image} x={xPosition} y={0} crop={{x:584,y:263,height:50,width:250}} width={252} height={50}/>
-      <Text text={pointsText()} x={xPosition+70} y={33} fill='#EACE9A'/>
-      {points}
-      <Image image={image} x={xPosition+169} y={31} crop={{x:328,y:479,height:15,width:15}} width={15} height={15}/>
-      <Text text={age} fontSize={15} x={xPosition+56} y={10} fill='#EACE9A' fontStyle='bold' align='center' width={140}/>
-      <Image image={image} x={xPosition+86} y={48} crop={{x:64,y:478,height:25,width:79}} width={79} height={25}/>
-      <Text text={getMinutes()+' :'} fontSize={11} x={xPosition+122} y={55} fill='#EACE9A' fontStyle='bold' align='left' width={140}/>
-      <Text text={getSeconds()} fontSize={11} x={xPosition+143} y={55} fill='#EACE9A' fontStyle='bold' align='left' width={140}/>
-      <Text text={'spend forge'} fontSize={11} x={xPosition+143} y={90} fill='#EACE9A' fontStyle='bold' align='center' width={140} onClick={spendForges}/>
     </Group>
   )
 }
